@@ -1,188 +1,1648 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Innovation Council</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovation Hub | Student Research & Development</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0e14;
+            --bg-secondary: #111820;
+            --fg: #e8edf4;
+            --muted: #6b7a8f;
+            --accent: #00d4aa;
+            --accent-glow: rgba(0, 212, 170, 0.3);
+            --card: rgba(17, 24, 32, 0.8);
+            --border: rgba(107, 122, 143, 0.2);
+            --gradient-1: #00d4aa;
+            --gradient-2: #0891b2;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--fg);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Canvas Background */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Gradient Orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+            top: -200px;
+            right: -200px;
+            animation: float-1 20s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(8, 145, 178, 0.2), transparent 70%);
+            bottom: -100px;
+            left: -100px;
+            animation: float-2 25s ease-in-out infinite;
+        }
+
+        @keyframes float-1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+
+        @keyframes float-2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, -30px) scale(0.9); }
+        }
+
+        /* Navigation */
+        .nav-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(10, 14, 20, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-tab {
+            position: relative;
+            padding: 0.75rem 1.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--muted);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--fg);
+        }
+
+        .nav-tab.active {
+            color: var(--accent);
+        }
+
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(0, 212, 170, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 30px var(--accent-glow);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        /* Team Cards */
+        .team-card {
+            perspective: 1000px;
+        }
+
+        .team-card-inner {
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .team-card:hover .team-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .team-card-front,
+        .team-card-back {
+            backface-visibility: hidden;
+            border-radius: 16px;
+        }
+
+        .team-card-back {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform: rotateY(180deg);
+            background: var(--card);
+            border: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            color: var(--bg);
+            font-weight: 600;
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--fg);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Form Inputs */
+        .form-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            color: var(--fg);
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        .form-input::placeholder {
+            color: var(--muted);
+        }
+
+        /* Gallery */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .gallery-item img {
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10, 14, 20, 0.9), transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            padding: 1rem;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        /* Filter Pills */
+        .filter-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .filter-pill:hover,
+        .filter-pill.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg);
+        }
+
+        /* Timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            border-left: 2px solid var(--border);
+            padding-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        /* Stats Counter */
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--muted);
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav {
+            display: none;
+        }
+
+        @media (max-width: 1024px) {
+            .desktop-nav {
+                display: none;
+            }
+            .mobile-nav {
+                display: block;
+            }
+            .mobile-menu {
+                display: none;
+                position: fixed;
+                top: 64px;
+                left: 0;
+                right: 0;
+                background: rgba(10, 14, 20, 0.98);
+                backdrop-filter: blur(20px);
+                padding: 1rem;
+                border-bottom: 1px solid var(--border);
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+            .mobile-menu.open {
+                display: block;
+            }
+        }
+
+        /* Hero Section */
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Announcement Ticker */
+        .ticker-wrapper {
+            overflow: hidden;
+            background: rgba(0, 212, 170, 0.1);
+            border-left: 3px solid var(--accent);
+        }
+
+        .ticker-content {
+            display: flex;
+            animation: ticker 30s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Achievement Badge */
+        .achievement-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            background: rgba(0, 212, 170, 0.1);
+            border: 1px solid rgba(0, 212, 170, 0.3);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            color: var(--accent);
+        }
+
+        /* Focus States */
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- Particle Canvas -->
+    <canvas id="particles-canvas"></canvas>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-    <h2>SIC</h2>
-    <div>
-        <a href="#about">About</a>
-        <a href="#team">Team</a>
-        <a href="#events">Events</a>
-        <a href="#gallery">Gallery</a>
-        <a href="#projects">Projects</a>
-        <a href="#contact">Contact</a>
-    </div>
-</nav>
+    <!-- Gradient Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
 
-<!-- HERO -->
-<header class="hero">
-    <h1>Student Innovation Council</h1>
-    <p>Innovate • Research • Build • Impact</p>
-</header>
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center">
+                        <svg class="w-6 h-6 text-[var(--bg)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="font-bold text-lg font-['Space_Grotesk']">Innovation Hub</span>
+                </div>
 
-<!-- ABOUT -->
-<section id="about" class="section">
-    <h2>About Us</h2>
+                <!-- Desktop Navigation -->
+                <div class="desktop-nav flex items-center gap-1 overflow-x-auto">
+                    <button class="nav-tab active" data-tab="about" aria-label="About Us">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            About
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="team" aria-label="Our Team">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                            Team
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="events" aria-label="Events">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Events
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="gallery" aria-label="Gallery">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            Gallery
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="projects" aria-label="Projects">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                            </svg>
+                            Projects
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="achievements" aria-label="Achievements">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                            </svg>
+                            Achievements
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="announcements" aria-label="Announcements">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/>
+                            </svg>
+                            Announcements
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="industry" aria-label="Industry">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+                            </svg>
+                            Industry
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="resources" aria-label="Resources">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                            </svg>
+                            Resources
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="join" aria-label="Join Us">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                            </svg>
+                            Join Us
+                        </span>
+                    </button>
+                    <button class="nav-tab" data-tab="contact" aria-label="Contact">
+                        <span class="flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                            Contact
+                        </span>
+                    </button>
+                </div>
 
-    <h3>Vision</h3>
-    <p>To create a culture of innovation, research, and problem-solving among students.</p>
+                <!-- Mobile Menu Button -->
+                <button class="mobile-nav p-2" id="mobile-menu-btn" aria-label="Toggle menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
 
-    <h3>Mission</h3>
-    <ul>
-        <li>Promote student research</li>
-        <li>Connect students with industry problems</li>
-        <li>Conduct innovation events</li>
-        <li>Support startup ideas</li>
-    </ul>
-</section>
+            <!-- Mobile Menu -->
+            <div class="mobile-menu" id="mobile-menu">
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="nav-tab active w-full text-left" data-tab="about">About</button>
+                    <button class="nav-tab w-full text-left" data-tab="team">Team</button>
+                    <button class="nav-tab w-full text-left" data-tab="events">Events</button>
+                    <button class="nav-tab w-full text-left" data-tab="gallery">Gallery</button>
+                    <button class="nav-tab w-full text-left" data-tab="projects">Projects</button>
+                    <button class="nav-tab w-full text-left" data-tab="achievements">Achievements</button>
+                    <button class="nav-tab w-full text-left" data-tab="announcements">Announcements</button>
+                    <button class="nav-tab w-full text-left" data-tab="industry">Industry</button>
+                    <button class="nav-tab w-full text-left" data-tab="resources">Resources</button>
+                    <button class="nav-tab w-full text-left" data-tab="join">Join Us</button>
+                    <button class="nav-tab w-full text-left col-span-2" data-tab="contact">Contact</button>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<!-- TEAM -->
-<section id="team" class="section light">
-<h2>Our Team</h2>
+    <!-- Main Content -->
+    <main class="relative z-10 pt-20 pb-12 px-4">
+        <div class="max-w-7xl mx-auto">
 
-<div class="card-container">
+            <!-- ABOUT US Section -->
+            <section id="about" class="content-section active">
+                <!-- Hero -->
+                <div class="text-center mb-16">
+                    <h1 class="hero-title mb-6">
+                        Where <span class="gradient-text">Innovation</span><br>Meets Excellence
+                    </h1>
+                    <p class="text-xl text-[var(--muted)] max-w-2xl mx-auto mb-8">
+                        Empowering students to transform ideas into impact through research, collaboration, and cutting-edge technology.
+                    </p>
+                    <div class="flex flex-wrap justify-center gap-4">
+                        <button class="btn-primary" onclick="switchTab('join')">Join the Hub</button>
+                        <button class="btn-secondary" onclick="switchTab('projects')">Explore Projects</button>
+                    </div>
+                </div>
 
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<h3>Faculty Coordinator</h3>
-<p>Department: CSE</p>
-</div>
+                <!-- Stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
+                    <div class="card text-center">
+                        <div class="stat-number" data-count="500">0</div>
+                        <div class="text-[var(--muted)]">Active Members</div>
+                    </div>
+                    <div class="card text-center">
+                        <div class="stat-number" data-count="120">0</div>
+                        <div class="text-[var(--muted)]">Projects Completed</div>
+                    </div>
+                    <div class="card text-center">
+                        <div class="stat-number" data-count="45">0</div>
+                        <div class="text-[var(--muted)]">Industry Partners</div>
+                    </div>
+                    <div class="card text-center">
+                        <div class="stat-number" data-count="30">0</div>
+                        <div class="text-[var(--muted)]">Events This Year</div>
+                    </div>
+                </div>
 
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<h3>Student President</h3>
-<p>Department: IT</p>
-</div>
+                <!-- Vision & Mission -->
+                <div class="grid md:grid-cols-2 gap-8 mb-16">
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center">
+                                <svg class="w-6 h-6 text-[var(--bg)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold">Our Vision</h2>
+                        </div>
+                        <p class="text-[var(--muted)] leading-relaxed">
+                            To create a culture of innovation, research, and problem-solving among students that transforms them into industry-ready professionals and future leaders.
+                        </p>
+                    </div>
 
-<div class="card">
-<img src="https://via.placeholder.com/150">
-<h3>Core Member</h3>
-<p>Department: EXTC</p>
-</div>
+                    <div class="card">
+                        <div class="flex items-center gap-3 mb-4">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center">
+                                <svg class="w-6 h-6 text-[var(--bg)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/>
+                                </svg>
+                            </div>
+                            <h2 class="text-2xl font-bold">Our Mission</h2>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mt-2 flex-shrink-0"></span>
+                                <span class="text-[var(--muted)]">Promote student research and critical thinking</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mt-2 flex-shrink-0"></span>
+                                <span class="text-[var(--muted)]">Connect students with real industry problems</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mt-2 flex-shrink-0"></span>
+                                <span class="text-[var(--muted)]">Conduct innovation events and hackathons</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)] mt-2 flex-shrink-0"></span>
+                                <span class="text-[var(--muted)]">Support and incubate student startup ideas</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
 
-</div>
-</section>
+            <!-- TEAM Section -->
+            <section id="team" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Our Team</h2>
+                <p class="text-[var(--muted)] mb-8">Meet the people driving innovation forward</p>
 
-<!-- EVENTS -->
-<section id="events" class="section">
-<h2>Events</h2>
+                <!-- Faculty Coordinator -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Faculty Coordinator</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    <div class="card team-card">
+                        <div class="team-card-inner">
+                            <div class="team-card-front">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center text-2xl font-bold text-[var(--bg)]">DR</div>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Dr. Rajesh Kumar</h4>
+                                        <p class="text-[var(--muted)]">Faculty Coordinator</p>
+                                        <p class="text-sm text-[var(--accent)]">Computer Science</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-card-back">
+                                <p class="text-sm text-[var(--muted)] text-center px-4">15+ years of experience in research and academia. Expert in AI/ML and computer vision.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<h3>Past Events</h3>
-<ul>
-<li>Hackathon 2025 – Innovation Challenge</li>
-<li>AI Workshop – Hands-on Training</li>
-</ul>
+                <!-- Student President -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Student President</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+                    <div class="card team-card">
+                        <div class="team-card-inner">
+                            <div class="team-card-front">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center text-2xl font-bold text-[var(--bg)]">AS</div>
+                                    <div>
+                                        <h4 class="font-semibold text-lg">Arjun Sharma</h4>
+                                        <p class="text-[var(--muted)]">Student President</p>
+                                        <p class="text-sm text-[var(--accent)]">Final Year, CSE</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="team-card-back">
+                                <p class="text-sm text-[var(--muted)] text-center px-4">Led 10+ successful hackathons. Winner of Smart India Hackathon 2023.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<h3>Upcoming Events</h3>
-<ul>
-<li>Startup Bootcamp – Register Soon</li>
-<li>IoT Project Expo – March 2026</li>
-</ul>
+                <!-- Core Members -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Core Members</h3>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12" id="core-members">
+                    <!-- Populated by JS -->
+                </div>
 
-</section>
+                <!-- Volunteers -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Volunteers</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="volunteers">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
 
-<!-- GALLERY -->
-<section id="gallery" class="section light">
-<h2>Image Gallery</h2>
+            <!-- EVENTS Section -->
+            <section id="events" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Events</h2>
+                <p class="text-[var(--muted)] mb-8">Discover our upcoming and past events</p>
 
-<div class="gallery">
-<img src="https://via.placeholder.com/200">
-<img src="https://via.placeholder.com/200">
-<img src="https://via.placeholder.com/200">
-<img src="https://via.placeholder.com/200">
-</div>
+                <!-- Upcoming Events -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Upcoming Events</h3>
+                <div class="grid md:grid-cols-2 gap-6 mb-12" id="upcoming-events">
+                    <!-- Populated by JS -->
+                </div>
 
-</section>
+                <!-- Past Events -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)] mt-12">Past Events</h3>
+                <div class="space-y-6" id="past-events">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
 
-<!-- PROJECT SHOWCASE -->
-<section id="projects" class="section">
-<h2>Project Showcase</h2>
+            <!-- GALLERY Section -->
+            <section id="gallery" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Image Gallery</h2>
+                <p class="text-[var(--muted)] mb-6">Moments captured from our events and activities</p>
 
-<div class="card-container">
+                <!-- Filter -->
+                <div class="flex flex-wrap gap-2 mb-8">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="workshops">Workshops</button>
+                    <button class="filter-pill" data-filter="hackathons">Hackathons</button>
+                    <button class="filter-pill" data-filter="lectures">Guest Lectures</button>
+                    <button class="filter-pill" data-filter="competitions">Competitions</button>
+                    <button class="filter-pill" data-filter="visits">Field Visits</button>
+                </div>
 
-<div class="card">
-<h3>Smart Helmet</h3>
-<p>Tech: IoT, Sensors</p>
-<p>Team: 3 Members</p>
-</div>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="gallery-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
 
-<div class="card">
-<h3>AI Attendance</h3>
-<p>Tech: Python, ML</p>
-<p>Team: 2 Members</p>
-</div>
+            <!-- PROJECTS Section -->
+            <section id="projects" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Project Showcase</h2>
+                <p class="text-[var(--muted)] mb-8">Innovative solutions built by our talented students</p>
 
-</div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-grid">
+                    <!-- Populated by JS -->
+                </div>
 
-</section>
+                <div class="mt-8 text-center">
+                    <button class="btn-primary" onclick="switchTab('join')">Submit Your Project</button>
+                </div>
+            </section>
 
-<!-- ACHIEVEMENTS -->
-<section class="section light">
-<h2>Achievements</h2>
-<ul>
-<li>National Hackathon Winners</li>
-<li>Research Paper Published</li>
-<li>Innovation Grant Received</li>
-</ul>
-</section>
+            <!-- ACHIEVEMENTS Section -->
+            <section id="achievements" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Achievements</h2>
+                <p class="text-[var(--muted)] mb-8">Celebrating excellence and success</p>
 
-<!-- ANNOUNCEMENTS -->
-<section class="section">
-<h2>Announcements</h2>
-<ul>
-<li>Meeting on Monday</li>
-<li>Project Submission Open</li>
-</ul>
-</section>
+                <div class="grid md:grid-cols-2 gap-6" id="achievements-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
 
-<!-- INDUSTRY -->
-<section class="section light">
-<h2>Industry Collaboration</h2>
-<ul>
-<li>Partner Companies</li>
-<li>Industry Problem Statements</li>
-<li>Internship Opportunities</li>
-</ul>
-</section>
+            <!-- ANNOUNCEMENTS Section -->
+            <section id="announcements" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Announcements</h2>
+                <p class="text-[var(--muted)] mb-8">Stay updated with the latest news and opportunities</p>
 
-<!-- RESOURCES -->
-<section class="section">
-<h2>Resources</h2>
-<ul>
-<li>Research Papers</li>
-<li>Learning Links</li>
-<li>Innovation Guides</li>
-</ul>
-</section>
+                <!-- Ticker -->
+                <div class="ticker-wrapper rounded-lg p-3 mb-8">
+                    <div class="ticker-content">
+                        <span class="text-[var(--accent)] font-semibold mx-8">New Hackathon Announcement Coming Soon</span>
+                        <span class="text-[var(--muted)] mx-8">Research Paper Submission Deadline Extended</span>
+                        <span class="text-[var(--accent)] font-semibold mx-8">Industry Visit to Tech Park - Register Now</span>
+                        <span class="text-[var(--muted)] mx-8">New Hackathon Announcement Coming Soon</span>
+                        <span class="text-[var(--accent)] font-semibold mx-8">Research Paper Submission Deadline Extended</span>
+                        <span class="text-[var(--muted)] mx-8">Industry Visit to Tech Park - Register Now</span>
+                    </div>
+                </div>
 
-<!-- JOIN FORM -->
-<section class="section light">
-<h2>Join Us</h2>
+                <div class="space-y-4" id="announcements-list">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
 
-<iframe src="YOUR_GOOGLE_FORM_LINK"
-width="100%" height="500"></iframe>
+            <!-- INDUSTRY Section -->
+            <section id="industry" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Industry Collaboration</h2>
+                <p class="text-[var(--muted)] mb-8">Bridging the gap between academia and industry</p>
 
-</section>
+                <!-- Partner Companies -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Partner Companies</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                    <div class="card flex items-center justify-center h-24 opacity-60 hover:opacity-100 transition-opacity">
+                        <span class="font-bold text-lg">TechCorp</span>
+                    </div>
+                    <div class="card flex items-center justify-center h-24 opacity-60 hover:opacity-100 transition-opacity">
+                        <span class="font-bold text-lg">InnovateTech</span>
+                    </div>
+                    <div class="card flex items-center justify-center h-24 opacity-60 hover:opacity-100 transition-opacity">
+                        <span class="font-bold text-lg">DataDriven</span>
+                    </div>
+                    <div class="card flex items-center justify-center h-24 opacity-60 hover:opacity-100 transition-opacity">
+                        <span class="font-bold text-lg">CloudBase</span>
+                    </div>
+                </div>
 
-<!-- CONTACT -->
-<section id="contact" class="section">
-<h2>Contact Us</h2>
-<p>Email: yourmail@gmail.com</p>
-<p>Office: College Campus</p>
-<p>Instagram: @sic_college</p>
-</section>
+                <!-- Problem Statements -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Open Problem Statements</h3>
+                <div class="space-y-4 mb-12" id="problem-statements">
+                    <!-- Populated by JS -->
+                </div>
 
-<footer>
-<p>© 2026 Student Innovation Council</p>
-</footer>
+                <!-- Internship Opportunities -->
+                <h3 class="text-xl font-semibold mb-4 text-[var(--accent)]">Internship Opportunities</h3>
+                <div class="grid md:grid-cols-2 gap-6" id="internships">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
 
+            <!-- RESOURCES Section -->
+            <section id="resources" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Resources</h2>
+                <p class="text-[var(--muted)] mb-8">Curated learning materials and tools for students</p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="resources-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- JOIN US Section -->
+            <section id="join" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Join Us</h2>
+                <p class="text-[var(--muted)] mb-8">Become part of our innovation community</p>
+
+                <div class="max-w-2xl mx-auto">
+                    <div class="card">
+                        <form id="join-form" class="space-y-6">
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Full Name</label>
+                                    <input type="text" class="form-input" placeholder="Enter your name" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Email</label>
+                                    <input type="email" class="form-input" placeholder="your@email.com" required>
+                                </div>
+                            </div>
+                            <div class="grid md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Branch</label>
+                                    <select class="form-input" required>
+                                        <option value="">Select your branch</option>
+                                        <option>Computer Science</option>
+                                        <option>Electronics</option>
+                                        <option>Mechanical</option>
+                                        <option>Civil</option>
+                                        <option>Electrical</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2">Year</label>
+                                    <select class="form-input" required>
+                                        <option value="">Select your year</option>
+                                        <option>1st Year</option>
+                                        <option>2nd Year</option>
+                                        <option>3rd Year</option>
+                                        <option>4th Year</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Skills</label>
+                                <input type="text" class="form-input" placeholder="e.g., Python, Web Development, AI/ML">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Interest Area</label>
+                                <textarea class="form-input" rows="3" placeholder="Tell us about your interests and what you hope to achieve"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary w-full">Submit Application</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTACT Section -->
+            <section id="contact" class="content-section">
+                <h2 class="text-4xl font-bold mb-2">Contact Us</h2>
+                <p class="text-[var(--muted)] mb-8">Get in touch with us</p>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-6">
+                        <div class="card">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Email</h4>
+                                    <p class="text-[var(--muted)]">innovationhub@university.edu</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Faculty Contact</h4>
+                                    <p class="text-[var(--muted)]">+91 98765 43210</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold">Office Location</h4>
+                                    <p class="text-[var(--muted)]">Innovation Center, Block A, Ground Floor</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Links -->
+                        <div class="flex gap-4">
+                            <a href="#" class="card p-4 hover:border-[var(--accent)]" aria-label="LinkedIn">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="card p-4 hover:border-[var(--accent)]" aria-label="Twitter">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="card p-4 hover:border-[var(--accent)]" aria-label="Instagram">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="card p-4 hover:border-[var(--accent)]" aria-label="GitHub">
+                                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Map Placeholder -->
+                    <div class="card h-80 flex items-center justify-center bg-[var(--bg-secondary)]">
+                        <div class="text-center">
+                            <svg class="w-16 h-16 mx-auto mb-4 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
+                            </svg>
+                            <p class="text-[var(--muted)]">Interactive Map</p>
+                            <p class="text-sm text-[var(--muted)]">University Campus, Innovation Center</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <script>
+        // ============ DATA ============
+        const coreMembers = [
+            { name: 'Priya Patel', role: 'Vice President', dept: 'Final Year, CSE', initials: 'PP' },
+            { name: 'Rahul Singh', role: 'Technical Lead', dept: '3rd Year, CSE', initials: 'RS' },
+            { name: 'Sneha Sharma', role: 'Event Coordinator', dept: '3rd Year, ECE', initials: 'SS' },
+            { name: 'Vikram Reddy', role: 'Research Lead', dept: 'Final Year, CSE', initials: 'VR' },
+            { name: 'Ananya Gupta', role: 'Design Lead', dept: '2nd Year, CSE', initials: 'AG' },
+            { name: 'Karthik Nair', role: 'Outreach Lead', dept: '3rd Year, ME', initials: 'KN' },
+            { name: 'Divya Krishnan', role: 'Content Lead', dept: '2nd Year, ECE', initials: 'DK' },
+            { name: 'Aditya Verma', role: 'Social Media', dept: '2nd Year, CSE', initials: 'AV' }
+        ];
+
+        const volunteers = [
+            { name: 'Amit K.', initials: 'AK' },
+            { name: 'Bhavna M.', initials: 'BM' },
+            { name: 'Chirag P.', initials: 'CP' },
+            { name: 'Deepa R.', initials: 'DR' },
+            { name: 'Esha S.', initials: 'ES' },
+            { name: 'Farhan Q.', initials: 'FQ' },
+            { name: 'Gita L.', initials: 'GL' },
+            { name: 'Harsh N.', initials: 'HN' },
+            { name: 'Isha P.', initials: 'IP' },
+            { name: 'Jay K.', initials: 'JK' },
+            { name: 'Kavya S.', initials: 'KS' },
+            { name: 'Lakshmi T.', initials: 'LT' }
+        ];
+
+        const upcomingEvents = [
+            {
+                name: 'Innovation Hackathon 2024',
+                date: 'March 15-16, 2024',
+                description: '48-hour coding marathon to build innovative solutions for real-world problems.',
+                registrationLink: '#',
+                poster: 'hackathon'
+            },
+            {
+                name: 'AI/ML Workshop Series',
+                date: 'March 20-22, 2024',
+                description: 'Hands-on workshop covering machine learning fundamentals and deep learning applications.',
+                registrationLink: '#',
+                poster: 'workshop'
+            }
+        ];
+
+        const pastEvents = [
+            {
+                name: 'Smart India Hackathon 2023',
+                date: 'December 2023',
+                description: 'Our team secured 2nd place nationally with an innovative healthcare solution.',
+                outcomes: '2nd Place National, 50+ Participants, 3 Project Incubations',
+                photos: ['sih1', 'sih2']
+            },
+            {
+                name: 'TechTalk: Future of AI',
+                date: 'November 2023',
+                description: 'Guest lecture by Dr. Aisha Rahman from Google AI on emerging AI trends.',
+                outcomes: '200+ Attendees, Industry Connections',
+                photos: ['techtalk1']
+            },
+            {
+                name: 'Startup Bootcamp',
+                date: 'October 2023',
+                description: 'Intensive 5-day bootcamp on entrepreneurship and startup fundamentals.',
+                outcomes: '15 Business Pitches, 3 Funding Opportunities',
+                photos: ['bootcamp1', 'bootcamp2']
+            }
+        ];
+
+        const galleryImages = [
+            { category: 'hackathons', title: 'SIH 2023 Finals' },
+            { category: 'workshops', title: 'Web Dev Workshop' },
+            { category: 'hackathons', title: 'Code Sprint' },
+            { category: 'lectures', title: 'Guest Lecture' },
+            { category: 'competitions', title: 'Project Expo' },
+            { category: 'visits', title: 'Industry Visit' },
+            { category: 'workshops', title: 'AI Workshop' },
+            { category: 'hackathons', title: 'Innovation Day' },
+            { category: 'lectures', title: 'Tech Talk' },
+            { category: 'competitions', title: 'Coding Contest' },
+            { category: 'visits', title: 'Tech Park Tour' },
+            { category: 'workshops', title: 'IoT Workshop' }
+        ];
+
+        const projects = [
+            {
+                title: 'MediConnect',
+                description: 'AI-powered healthcare platform connecting patients with doctors for remote consultations.',
+                tech: ['React', 'Python', 'TensorFlow', 'AWS'],
+                team: ['Arjun S.', 'Priya P.', 'Rahul S.'],
+                demoLink: '#'
+            },
+            {
+                title: 'Smart Campus',
+                description: 'IoT-based campus management system for efficient resource utilization and security.',
+                tech: ['Node.js', 'MongoDB', 'Raspberry Pi', 'Flutter'],
+                team: ['Vikram R.', 'Sneha S.'],
+                demoLink: '#'
+            },
+            {
+                title: 'EduLearn',
+                description: 'Adaptive learning platform using AI to personalize educational content.',
+                tech: ['Vue.js', 'Django', 'OpenAI', 'PostgreSQL'],
+                team: ['Ananya G.', 'Karthik N.', 'Divya K.'],
+                demoLink: '#'
+            },
+            {
+                title: 'GreenTrack',
+                description: 'Carbon footprint tracker with gamification elements for sustainable living.',
+                tech: ['React Native', 'Firebase', 'Node.js', 'Charts.js'],
+                team: ['Aditya V.', 'Amit K.'],
+                demoLink: '#'
+            },
+            {
+                title: 'SignLanguage AI',
+                description: 'Real-time sign language translation app using computer vision.',
+                tech: ['Python', 'OpenCV', 'MediaPipe', 'TensorFlow'],
+                team: ['Bhavna M.', 'Chirag P.', 'Deepa R.'],
+                demoLink: '#'
+            },
+            {
+                title: 'FarmAssist',
+                description: 'Smart farming solution with crop disease detection and yield prediction.',
+                tech: ['Flutter', 'Python', 'Satellite API', 'ML Models'],
+                team: ['Esha S.', 'Farhan Q.'],
+                demoLink: '#'
+            }
+        ];
+
+        const achievements = [
+            { type: 'award', title: 'Smart India Hackathon 2023', description: '2nd Place - Healthcare Category', person: 'Team InnovationHub' },
+            { type: 'grant', title: 'Research Grant', description: 'Rs. 5 Lakh from DST for AI Research', person: 'Dr. Rajesh Kumar' },
+            { type: 'paper', title: 'IEEE Publication', title: 'Research Paper Published', description: 'ML-Based Healthcare Diagnostics', person: 'Vikram Reddy' },
+            { type: 'win', title: 'National Coding Contest', description: '1st Place among 500+ teams', person: 'Rahul Singh' },
+            { type: 'award', title: 'Best Startup Idea', description: 'State-level Entrepreneurship Summit', person: 'MediConnect Team' },
+            { type: 'paper', title: 'ACM Conference', description: 'Paper on IoT Security Accepted', person: 'Priya Patel' }
+        ];
+
+        const announcements = [
+            { type: 'urgent', title: 'Hackathon Registration Open', description: 'Register now for Innovation Hackathon 2024. Limited seats available!', date: 'March 5, 2024' },
+            { type: 'meeting', title: 'Weekly Team Meeting', description: 'All members required to attend the weekly sync-up session.', date: 'March 8, 2024' },
+            { type: 'opportunity', title: 'Summer Internship Program', description: 'Applications open for summer internships at partner companies.', date: 'March 10, 2024' },
+            { type: 'event', title: 'Workshop on Cloud Computing', description: 'Hands-on workshop by AWS certified professionals.', date: 'March 12, 2024' }
+        ];
+
+        const problemStatements = [
+            { company: 'TechCorp', title: 'Supply Chain Optimization', description: 'Develop an AI solution for optimizing logistics and supply chain routes.' },
+            { company: 'DataDriven', title: 'Customer Churn Prediction', description: 'Build a predictive model to identify customers likely to discontinue services.' },
+            { company: 'CloudBase', title: 'Security Audit Tool', description: 'Create an automated security vulnerability scanner for cloud deployments.' }
+        ];
+
+        const internships = [
+            { company: 'TechCorp', role: 'Software Developer Intern', duration: '3 months', stipend: 'Rs. 15,000/month' },
+            { company: 'InnovateTech', role: 'Data Science Intern', duration: '6 months', stipend: 'Rs. 20,000/month' },
+            { company: 'DataDriven', role: 'ML Engineer Intern', duration: '4 months', stipend: 'Rs. 18,000/month' },
+            { company: 'CloudBase', role: 'DevOps Intern', duration: '3 months', stipend: 'Rs. 15,000/month' }
+        ];
+
+        const resources = [
+            { category: 'Research Papers', title: 'Latest Research Database', icon: 'document', link: '#' },
+            { category: 'Learning', title: 'Free Course Access', icon: 'academic', link: '#' },
+            { category: 'Tools', title: 'Development Tools', icon: 'code', link: '#' },
+            { category: 'Guides', title: 'Innovation Toolkit', icon: 'lightbulb', link: '#' },
+            { category: 'Templates', title: 'Project Templates', icon: 'folder', link: '#' },
+            { category: 'Videos', title: 'Tutorial Library', icon: 'play', link: '#' }
+        ];
+
+        // ============ PARTICLES CANVAS ============
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createParticles() {
+            particles = [];
+            const particleCount = Math.min(80, Math.floor((canvas.width * canvas.height) / 15000));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    radius: Math.max(1, Math.random() * 2),
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach((p, i) => {
+                // Update position
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                // Wrap around edges
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                
+                // Draw particle
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 212, 170, ${p.opacity})`;
+                ctx.fill();
+                
+                // Draw connections
+                particles.slice(i + 1).forEach(p2 => {
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(0, 212, 170, ${0.1 * (1 - dist / 150)})`;
+                        ctx.stroke();
+                    }
+                });
+            });
+            
+            animationId = requestAnimationFrame(drawParticles);
+        }
+
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        if (!prefersReducedMotion) {
+            resizeCanvas();
+            createParticles();
+            drawParticles();
+            
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                createParticles();
+            });
+        }
+
+        // ============ NAVIGATION ============
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const contentSections = document.querySelectorAll('.content-section');
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        function switchTab(tabId) {
+            // Update nav tabs
+            navTabs.forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.dataset.tab === tabId) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            // Update content sections
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === tabId) {
+                    section.classList.add('active');
+                    // Trigger counter animation if about section
+                    if (tabId === 'about') {
+                        animateCounters();
+                    }
+                }
+            });
+            
+            // Close mobile menu
+            mobileMenu.classList.remove('open');
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                switchTab(tab.dataset.tab);
+            });
+        });
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+        });
+
+        // ============ RENDER FUNCTIONS ============
+        function renderCoreMembers() {
+            const container = document.getElementById('core-members');
+            container.innerHTML = coreMembers.map(member => `
+                <div class="card team-card">
+                    <div class="team-card-inner">
+                        <div class="team-card-front">
+                            <div class="flex flex-col items-center text-center">
+                                <div class="w-16 h-16 rounded-full bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center text-xl font-bold text-[var(--bg)] mb-3">${member.initials}</div>
+                                <h4 class="font-semibold">${member.name}</h4>
+                                <p class="text-sm text-[var(--muted)]">${member.role}</p>
+                                <p class="text-xs text-[var(--accent)]">${member.dept}</p>
+                            </div>
+                        </div>
+                        <div class="team-card-back">
+                            <p class="text-sm text-[var(--muted)] text-center px-4">Passionate about innovation and technology. Leading initiatives that make a difference.</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderVolunteers() {
+            const container = document.getElementById('volunteers');
+            container.innerHTML = volunteers.map(vol => `
+                <div class="card p-3 text-center hover:border-[var(--accent)] transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center text-sm font-bold text-[var(--bg)] mx-auto mb-2">${vol.initials}</div>
+                    <p class="text-sm font-medium">${vol.name}</p>
+                </div>
+            `).join('');
+        }
+
+        function renderUpcomingEvents() {
+            const container = document.getElementById('upcoming-events');
+            container.innerHTML = upcomingEvents.map(event => `
+                <div class="card">
+                    <div class="h-40 rounded-lg bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg)] mb-4 flex items-center justify-center">
+                        <svg class="w-16 h-16 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="achievement-badge mb-3">${event.date}</div>
+                    <h4 class="text-xl font-semibold mb-2">${event.name}</h4>
+                    <p class="text-[var(--muted)] mb-4">${event.description}</p>
+                    <a href="${event.registrationLink}" class="btn-primary inline-block">Register Now</a>
+                </div>
+            `).join('');
+        }
+
+        function renderPastEvents() {
+            const container = document.getElementById('past-events');
+            container.innerHTML = pastEvents.map(event => `
+                <div class="timeline-item">
+                    <div class="card ml-4">
+                        <div class="flex flex-wrap items-start justify-between gap-4 mb-3">
+                            <div>
+                                <h4 class="text-xl font-semibold">${event.name}</h4>
+                                <p class="text-[var(--accent)] text-sm">${event.date}</p>
+                            </div>
+                            <div class="flex gap-2">
+                                ${event.photos.map((_, i) => `
+                                    <div class="w-12 h-12 rounded-lg bg-[var(--bg-secondary)] flex items-center justify-center">
+                                        <svg class="w-5 h-5 text-[var(--muted)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                        <p class="text-[var(--muted)] mb-3">${event.description}</p>
+                        <div class="pt-3 border-t border-[var(--border)]">
+                            <p class="text-sm"><span class="text-[var(--accent)] font-medium">Outcomes:</span> <span class="text-[var(--muted)]">${event.outcomes}</span></p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderGallery() {
+            const container = document.getElementById('gallery-grid');
+            container.innerHTML = galleryImages.map((img, i) => `
+                <div class="gallery-item aspect-square" data-category="${img.category}">
+                    <div class="w-full h-full bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg)] flex items-center justify-center">
+                        <svg class="w-10 h-10 text-[var(--accent)] opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <div class="gallery-overlay">
+                        <span class="text-sm font-medium">${img.title}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Gallery filter
+            const filterPills = document.querySelectorAll('.filter-pill');
+            filterPills.forEach(pill => {
+                pill.addEventListener('click', () => {
+                    filterPills.forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    
+                    const filter = pill.dataset.filter;
+                    const items = container.querySelectorAll('.gallery-item');
+                    
+                    items.forEach(item => {
+                        if (filter === 'all' || item.dataset.category === filter) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+        function renderProjects() {
+            const container = document.getElementById('projects-grid');
+            container.innerHTML = projects.map(project => `
+                <div class="card">
+                    <h4 class="text-xl font-semibold mb-2">${project.title}</h4>
+                    <p class="text-[var(--muted)] text-sm mb-4">${project.description}</p>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        ${project.tech.map(t => `<span class="achievement-badge">${t}</span>`).join('')}
+                    </div>
+                    <div class="pt-4 border-t border-[var(--border)]">
+                        <p class="text-xs text-[var(--muted)] mb-3">Team: ${project.team.join(', ')}</p>
+                        <a href="${project.demoLink}" class="btn-secondary text-sm inline-block">View Demo</a>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAchievements() {
+            const container = document.getElementById('achievements-grid');
+            const icons = {
+                award: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>',
+                grant: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                paper: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+                win: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>'
+            };
+            
+            container.innerHTML = achievements.map(a => `
+                <div class="card">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--gradient-1)] to-[var(--gradient-2)] flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-[var(--bg)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icons[a.type]}</svg>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold">${a.title}</h4>
+                            <p class="text-[var(--muted)] text-sm">${a.description}</p>
+                            <p class="text-xs text-[var(--accent)] mt-1">${a.person}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderAnnouncements() {
+            const container = document.getElementById('announcements-list');
+            const typeColors = {
+                urgent: 'var(--accent)',
+                meeting: '#f59e0b',
+                opportunity: '#10b981',
+                event: '#6366f1'
+            };
+            
+            container.innerHTML = announcements.map(a => `
+                <div class="card flex items-start gap-4" style="border-left: 3px solid ${typeColors[a.type]}">
+                    <div class="flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h4 class="font-semibold">${a.title}</h4>
+                            <span class="text-xs text-[var(--muted)]">${a.date}</span>
+                        </div>
+                        <p class="text-[var(--muted)] text-sm">${a.description}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderProblemStatements() {
+            const container = document.getElementById('problem-statements');
+            container.innerHTML = problemStatements.map(ps => `
+                <div class="card">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <div class="achievement-badge mb-2">${ps.company}</div>
+                            <h4 class="font-semibold">${ps.title}</h4>
+                            <p class="text-[var(--muted)] text-sm">${ps.description}</p>
+                        </div>
+                        <button class="btn-secondary text-sm">Apply</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderInternships() {
+            const container = document.getElementById('internships');
+            container.innerHTML = internships.map(int => `
+                <div class="card">
+                    <div class="achievement-badge mb-3">${int.company}</div>
+                    <h4 class="font-semibold text-lg mb-1">${int.role}</h4>
+                    <p class="text-[var(--muted)] text-sm mb-4">${int.duration} | ${int.stipend}</p>
+                    <button class="btn-primary text-sm">Apply Now</button>
+                </div>
+            `).join('');
+        }
+
+        function renderResources() {
+            const container = document.getElementById('resources-grid');
+            const icons = {
+                document: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>',
+                academic: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>',
+                code: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>',
+                lightbulb: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>',
+                folder: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>',
+                play: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+            };
+            
+            container.innerHTML = resources.map(r => `
+                <a href="${r.link}" class="card block hover:border-[var(--accent)]">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl bg-[var(--bg-secondary)] flex items-center justify-center">
+                            <svg class="w-6 h-6 text-[var(--accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">${icons[r.icon]}</svg>
+                        </div>
+                        <div>
+                            <p class="text-xs text-[var(--muted)]">${r.category}</p>
+                            <h4 class="font-semibold">${r.title}</h4>
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+        }
+
+        // ============ COUNTER ANIMATION ============
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            
+            counters.forEach(counter => {
+                const target = parseInt(counter.dataset.count);
+                const duration = 2000;
+                const step = target / (duration / 16);
+                let current = 0;
+                
+                const updateCounter = () => {
+                    current += step;
+                    if (current < target) {
+                        counter.textContent = Math.floor(current) + '+';
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        counter.textContent = target + '+';
+                    }
+                };
+                
+                if (!prefersReducedMotion) {
+                    updateCounter();
+                } else {
+                    counter.textContent = target + '+';
+                }
+            });
+        }
+
+        // ============ FORM HANDLING ============
+        document.getElementById('join-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Thank you for your application! We will get back to you soon.');
+        });
+
+        // ============ INITIALIZE ============
+        function init() {
+            renderCoreMembers();
+            renderVolunteers();
+            renderUpcomingEvents();
+            renderPastEvents();
+            renderGallery();
+            renderProjects();
+            renderAchievements();
+            renderAnnouncements();
+            renderProblemStatements();
+            renderInternships();
+            renderResources();
+            
+            // Animate counters on initial load
+            setTimeout(animateCounters, 500);
+        }
+
+        // Run initialization
+        init();
+    </script>
 </body>
 </html>

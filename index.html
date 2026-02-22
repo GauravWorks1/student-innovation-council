@@ -1,171 +1,152 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Innovation Hub | Student Research & Development</title>
-
-    <!-- Tailwind CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <style>
-        :root {
-            --bg: #0a0e14;
-            --bg-secondary: #111820;
-            --fg: #e8edf4;
-            --muted: #6b7a8f;
-            --accent: #00d4aa;
-            --accent-glow: rgba(0, 212, 170, 0.3);
-            --card: rgba(17, 24, 32, 0.8);
-            --border: rgba(107, 122, 143, 0.2);
-            --gradient-1: #00d4aa;
-            --gradient-2: #0891b2;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--fg);
-        }
-
-        h1, h2, h3, h4 {
-            font-family: 'Space Grotesk', sans-serif;
-        }
-
-        .glass {
-            background: var(--card);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-        }
-
-        .accent-gradient {
-            background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Innovation Council</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-
-<body>
+<body class="bg-slate-950 text-white">
 
 <!-- NAVBAR -->
-<nav class="fixed top-0 left-0 w-full glass z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold accent-gradient">Student Innovation Council</h1>
-        <div class="space-x-6 hidden md:block">
-            <a href="#about" class="hover:text-teal-400">About</a>
-            <a href="#events" class="hover:text-teal-400">Events</a>
-            <a href="#projects" class="hover:text-teal-400">Projects</a>
-            <a href="#contact" class="hover:text-teal-400">Contact</a>
-        </div>
+<nav class="fixed top-0 w-full bg-slate-900/80 backdrop-blur z-50 border-b border-slate-800">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+    <h1 class="text-xl font-bold">SIC</h1>
+    <div class="space-x-6 hidden md:block">
+      <button onclick="showPage('home')">Home</button>
+      <button onclick="showPage('team')">Team</button>
+      <button onclick="showPage('events')">Events</button>
+      <button onclick="showPage('gallery')">Gallery</button>
+      <button onclick="showPage('projects')">Projects</button>
+      <button onclick="showPage('contact')">Contact</button>
     </div>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section class="min-h-screen flex items-center justify-center text-center px-6">
+<!-- PAGES CONTAINER -->
+<div class="pt-24">
+
+<!-- HOME -->
+<section id="home" class="page max-w-7xl mx-auto px-4 py-20">
+  <h2 class="text-4xl font-bold mb-6">Student Innovation Council</h2>
+  <p class="text-slate-300 mb-10">Creating innovation culture among students.</p>
+
+  <div class="grid md:grid-cols-2 gap-10">
     <div>
-        <h2 class="text-5xl font-bold mb-6 accent-gradient">Innovation Starts With Students</h2>
-        <p class="text-gray-400 max-w-xl mx-auto">
-            Building research mindset, startup culture and real-world problem solving inside campus.
-        </p>
+      <h3 class="text-2xl font-semibold mb-3">Vision</h3>
+      <p class="text-slate-400">To create a culture of innovation, research, and problem-solving among students.</p>
     </div>
+
+    <div>
+      <h3 class="text-2xl font-semibold mb-3">Mission</h3>
+      <ul class="text-slate-400 list-disc ml-6">
+        <li>Promote student research</li>
+        <li>Connect students with industry problems</li>
+        <li>Conduct innovation events</li>
+        <li>Support startup ideas</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about" class="py-20 bg-[#0f1620]">
-    <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-10">About Us</h2>
-
-        <div class="grid md:grid-cols-2 gap-10">
-            <div class="glass p-6 rounded-xl">
-                <h3 class="text-xl font-semibold mb-4">Vision</h3>
-                <p class="text-gray-400">
-                    To create a culture of innovation, research, and problem-solving among students.
-                </p>
-            </div>
-
-            <div class="glass p-6 rounded-xl">
-                <h3 class="text-xl font-semibold mb-4">Mission</h3>
-                <ul class="text-gray-400 space-y-2 list-disc list-inside">
-                    <li>Promote student research</li>
-                    <li>Connect students with industry problems</li>
-                    <li>Conduct innovation events</li>
-                    <li>Support startup ideas</li>
-                </ul>
-            </div>
-        </div>
-    </div>
+<!-- TEAM -->
+<section id="team" class="page hidden max-w-7xl mx-auto px-4 py-20">
+  <h2 class="text-3xl font-bold mb-10">Our Team</h2>
+  <div id="teamContainer" class="grid md:grid-cols-3 gap-8"></div>
 </section>
 
 <!-- EVENTS -->
-<section id="events" class="py-20">
-    <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-10">Events</h2>
+<section id="events" class="page hidden max-w-7xl mx-auto px-4 py-20">
+  <h2 class="text-3xl font-bold mb-10">Events</h2>
+  <div id="eventsContainer" class="grid md:grid-cols-2 gap-8"></div>
+</section>
 
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="glass p-6 rounded-xl">
-                <h3 class="font-semibold">Hackathon 2026</h3>
-                <p class="text-gray-400 text-sm mt-2">Innovation based hackathon for students</p>
-            </div>
-
-            <div class="glass p-6 rounded-xl">
-                <h3 class="font-semibold">Startup Workshop</h3>
-                <p class="text-gray-400 text-sm mt-2">Learn how to build and pitch startups</p>
-            </div>
-
-            <div class="glass p-6 rounded-xl">
-                <h3 class="font-semibold">Industry Guest Talk</h3>
-                <p class="text-gray-400 text-sm mt-2">Interaction with industry professionals</p>
-            </div>
-        </div>
-    </div>
+<!-- GALLERY -->
+<section id="gallery" class="page hidden max-w-7xl mx-auto px-4 py-20">
+  <h2 class="text-3xl font-bold mb-10">Gallery</h2>
+  <div id="galleryContainer" class="grid md:grid-cols-3 gap-6"></div>
 </section>
 
 <!-- PROJECTS -->
-<section id="projects" class="py-20 bg-[#0f1620]">
-    <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-10">Project Showcase</h2>
-
-        <div class="grid md:grid-cols-3 gap-8">
-            <div class="glass p-6 rounded-xl">
-                <h3 class="font-semibold">BrainSense Home Automation</h3>
-                <p class="text-gray-400 text-sm mt-2">BCI based home automation using EEG</p>
-            </div>
-
-            <div class="glass p-6 rounded-xl">
-                <h3 class="font-semibold">Smart Helmet</h3>
-                <p class="text-gray-400 text-sm mt-2">Helmet with safety + IoT features</p>
-            </div>
-
-            <div class="glass p-6 rounded-xl">
-                <h3 class="font-semibold">Smart Teaching Board</h3>
-                <p class="text-gray-400 text-sm mt-2">Digital classroom interaction system</p>
-            </div>
-        </div>
-    </div>
+<section id="projects" class="page hidden max-w-7xl mx-auto px-4 py-20">
+  <h2 class="text-3xl font-bold mb-10">Projects</h2>
+  <div id="projectsContainer" class="grid md:grid-cols-2 gap-8"></div>
 </section>
 
 <!-- CONTACT -->
-<section id="contact" class="py-20">
-    <div class="max-w-4xl mx-auto px-6 text-center">
-        <h2 class="text-3xl font-bold mb-6">Contact Us</h2>
-        <p class="text-gray-400">studentinnovation@college.edu</p>
-    </div>
+<section id="contact" class="page hidden max-w-7xl mx-auto px-4 py-20">
+  <h2 class="text-3xl font-bold mb-6">Contact</h2>
+  <p>Email: sic@college.edu</p>
+  <p>Office: Innovation Lab</p>
 </section>
 
-<footer class="text-center py-6 text-gray-500 text-sm">
-    © 2026 Student Innovation Council
-</footer>
+</div>
+
+<script>
+
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  document.getElementById(pageId).classList.remove('hidden');
+}
+
+// LOAD TEAM
+fetch('data/team.json')
+.then(res => res.json())
+.then(data => {
+  const container = document.getElementById('teamContainer');
+  data.forEach(member => {
+    container.innerHTML += `
+      <div class="bg-slate-900 p-6 rounded-xl">
+        <img src="${member.photo}" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover">
+        <h3 class="text-xl text-center font-semibold">${member.name}</h3>
+        <p class="text-center text-slate-400">${member.role}</p>
+        <p class="text-center text-slate-500 text-sm">${member.department}</p>
+      </div>`;
+  });
+});
+
+// LOAD EVENTS
+fetch('data/events.json')
+.then(res => res.json())
+.then(data => {
+  const container = document.getElementById('eventsContainer');
+  data.forEach(event => {
+    container.innerHTML += `
+      <div class="bg-slate-900 p-6 rounded-xl">
+        <h3 class="text-xl font-semibold mb-2">${event.name}</h3>
+        <p class="text-slate-400 mb-2">${event.date}</p>
+        <p class="text-slate-300">${event.description}</p>
+      </div>`;
+  });
+});
+
+// LOAD GALLERY
+fetch('data/gallery.json')
+.then(res => res.json())
+.then(data => {
+  const container = document.getElementById('galleryContainer');
+  data.forEach(img => {
+    container.innerHTML += `
+      <img src="${img.url}" class="rounded-xl">`;
+  });
+});
+
+// LOAD PROJECTS
+fetch('data/projects.json')
+.then(res => res.json())
+.then(data => {
+  const container = document.getElementById('projectsContainer');
+  data.forEach(project => {
+    container.innerHTML += `
+      <div class="bg-slate-900 p-6 rounded-xl">
+        <h3 class="text-xl font-semibold">${project.title}</h3>
+        <p class="text-slate-400 mb-2">${project.tech}</p>
+        <p class="text-slate-300">${project.description}</p>
+      </div>`;
+  });
+});
+
+</script>
 
 </body>
 </html>
